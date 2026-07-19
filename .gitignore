@@ -1,0 +1,11 @@
+# 密钥文件 —— 绝对不能进 git
+.env
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# macOS
+.DS_Store

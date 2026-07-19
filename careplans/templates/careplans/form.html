@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Care Plan Generator</title>
+  <style>
+    body { font-family: sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+    label { display: block; margin-top: 0.8rem; font-weight: bold; }
+    input, textarea { width: 100%; padding: 6px; box-sizing: border-box; }
+    textarea { height: 100px; }
+    button { margin-top: 1.2rem; padding: 10px 24px; font-size: 1rem; }
+    .hint { color: #666; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <h1>Care Plan Generator (MVP)</h1>
+  <p class="hint">提交后会同步等待 LLM 生成，可能需要一分钟左右，请勿重复点击。</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <label>Patient First Name <input name="first_name"></label>
+    <label>Patient Last Name <input name="last_name"></label>
+    <label>Patient MRN <input name="mrn"></label>
+    <label>Referring Provider <input name="provider_name"></label>
+    <label>Referring Provider NPI <input name="provider_npi"></label>
+    <label>Primary Diagnosis (ICD-10) <input name="primary_diagnosis"></label>
+    <label>Additional Diagnoses (ICD-10, comma separated) <input name="additional_diagnoses"></label>
+    <label>Medication Name <input name="medication"></label>
+    <label>Medication History (one per line) <textarea name="medication_history"></textarea></label>
+    <label>Patient Records <textarea name="patient_records"></textarea></label>
+    <button type="submit">Generate Care Plan</button>
+  </form>
+
+  {% if orders %}
+    <h2>Generated Orders (in-memory)</h2>
+    <ul>
+      {% for id, o in orders.items %}
+        <li>#{{ id }} — {{ o.first_name }} {{ o.last_name }} / {{ o.medication }}
+          — <a href="/download/{{ id }}/">download</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</body>
+</html>
