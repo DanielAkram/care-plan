@@ -4,6 +4,9 @@
 # 生成的 care plan 文件 —— 产物不进版本库，而且长得像患者数据
 care_plan_*.txt
 
+# 日志文件 —— 运行产物，且含患者姓名
+app.log
+
 # Python
 __pycache__/
 *.pyc
