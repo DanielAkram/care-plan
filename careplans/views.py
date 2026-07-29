@@ -26,8 +26,13 @@ FIELDS = [
 def order_form(request):
     if request.method == "POST":
         data = {f: request.POST.get(f, "") for f in FIELDS}
+        print(f"[1] 收到请求：patient={data['first_name']} {data['last_name']}, med={data['medication']}")
+
         # 同步等待 LLM 生成（通常几十秒），生成完直接展示
+        print("[2] 开始调用 LLM ...")
         data["care_plan"] = generate_care_plan(data)
+        print(f"[3] LLM 返回，care_plan 长度 = {len(data['care_plan'])} 字符")
+
         order_id = next(_next_id)
         ORDERS[order_id] = data
         return render(

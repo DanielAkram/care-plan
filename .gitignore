@@ -1,6 +1,9 @@
 # 密钥文件 —— 绝对不能进 git
 .env
 
+# 生成的 care plan 文件 —— 产物不进版本库，而且长得像患者数据
+care_plan_*.txt
+
 # Python
 __pycache__/
 *.pyc

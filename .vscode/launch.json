@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // 路线 A：不用 Docker，直接在本机跑 Django，断点开箱即用
+      "name": "Django (本机调试)",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${workspaceFolder}/venv/bin/python",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["runserver", "8000", "--noreload"],
+      "django": true,
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      // 路线 B：附加到 Docker 容器里正在跑的进程
+      // 需要先 docker compose up，容器会在 5678 端口等你连
+      "name": "Attach to Docker",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": { "host": "localhost", "port": 5678 },
+      "pathMappings": [
+        { "localRoot": "${workspaceFolder}", "remoteRoot": "/app" }
+      ],
+      "justMyCode": true
+    }
+  ]
+}
