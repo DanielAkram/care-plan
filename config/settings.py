@@ -29,8 +29,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# 不用数据库 —— 数据存内存字典
-DATABASES = {}
+# PostgreSQL —— 连接参数从环境变量读（docker-compose.yml 里传进来）
+import os
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("POSTGRES_DB", "careplan"),
+        "USER": os.environ.get("POSTGRES_USER", "careplan"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "careplan"),
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+    }
+}
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"

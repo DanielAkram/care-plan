@@ -1,4 +1,22 @@
 services:
+  # ---- 数据库服务：PostgreSQL ----
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: careplan
+      POSTGRES_USER: careplan
+      POSTGRES_PASSWORD: careplan   # 本地开发用，生产环境绝不能这样写死
+    ports:
+      - "5432:5432"   # 把容器的 5432 映射到本机，TablePlus 才连得进来
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # 数据存到命名卷，容器删了数据还在
+    healthcheck:
+      # 让 web 服务等 db "真正就绪"再启动，而不是刚创建就连
+      test: ["CMD-SHELL", "pg_isready -U careplan"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
   web:
     build: .
     ports:
@@ -7,11 +25,24 @@ services:
     environment:
       # 自动从同目录的 .env 文件读取
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # 告诉 Django 怎么连数据库（settings.py 会读这些）
+      - POSTGRES_DB=careplan
+      - POSTGRES_USER=careplan
+      - POSTGRES_PASSWORD=careplan
+      - POSTGRES_HOST=db      # 关键：主机名就是上面那个服务名 "db"
+      - POSTGRES_PORT=5432
     volumes:
       - .:/app
+    depends_on:
+      db:
+        condition: service_healthy   # 等 db 健康检查通过再起 web
 
     # 平时保持注释状态：默认命令带热重载，改代码不用重启。
     # 想在 Docker 里打断点时，把下面这行的 # 去掉，然后重启容器，
     # 再在 VS Code 里选 "Attach to Docker" 按 F5。
     # 注意 --noreload：Django 的热重载会另开子进程，断点会打不中。
     # command: python -m debugpy --listen 0.0.0.0:5678 manage.py runserver 0.0.0.0:8000 --noreload
+
+# 命名卷：数据库文件存这里，跟容器解耦
+volumes:
+  pgdata:

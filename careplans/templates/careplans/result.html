@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Care Plan #{{ order_id }}</title>
+  <title>Care Plan #{{ order.id }}</title>
   <style>
     body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
     pre { background: #f6f6f6; padding: 1rem; white-space: pre-wrap; border: 1px solid #ddd; }
@@ -11,14 +11,14 @@
   </style>
 </head>
 <body>
-  <h1>Care Plan #{{ order_id }}</h1>
-  <p>{{ order.first_name }} {{ order.last_name }} — {{ order.medication }}</p>
+  <h1>Care Plan #{{ order.id }}</h1>
+  <p>{{ order.patient.first_name }} {{ order.patient.last_name }} — {{ order.medication }}</p>
 
   <p>
-    <a class="button" href="/download/{{ order_id }}/">Download .txt</a>
+    <a class="button" href="/download/{{ order.id }}/">Download .txt</a>
     <a href="/">← Back to form</a>
   </p>
 
-  <pre>{{ order.care_plan }}</pre>
+  <pre>{{ order.care_plan.content }}</pre>
 </body>
 </html>
